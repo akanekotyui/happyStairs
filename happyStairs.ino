@@ -1,8 +1,35 @@
+#include <Stepper.h>
+
+#define STEPS 200
+
+//motor data
+//direction 12 13
+//speed 3 11
+//brake 9 8
+//current sensing 0 1
+
+Stepper myStepper(STEPS, 12, 13);
+const int dirA = 12;
+const int dirB = 13;
+const int pwmA = 3;
+const int pwmB = 11;
+const int brakeA = 9;
+const int brakeB = 8;
 
 
 void setup() {
   //9600から変更
   Serial.begin(1200);
+  pinMode(pwmA, OUTPUT);
+  pinMode(pwmB, OUTPUT);
+  pinMode(brakeA, OUTPUT);
+  pinMode(brakeB, OUTPUT);
+  digitalWrite(pwmA, HIGH);
+  digitalWrite(pwmB, HIGH);
+  digitalWrite(brakeA, LOW);
+  digitalWrite(brakeB, LOW);
+
+  myStepper.setSpeed(256);
 }
 
 void loop() {
@@ -18,7 +45,7 @@ void loop() {
   //"あたり"がでたらflagが1になる
   int flag[5];
 
-  while (flag != 1) {
+  while (flag[i] != 1) {
     while (randNumber > count) {
       // アナログ入力の値を電圧(V)に変換
       float voltage = (analogRead(i) / 1024.0) * 5.0;
@@ -58,6 +85,12 @@ void loop() {
   }
   delay(100);
 
+  //ここから出力
 
+  myStepper.step(STEPS);
+
+  while (1) {
+    delay(2000);
+  }
 }
 
